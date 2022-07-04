@@ -5,7 +5,7 @@ namespace NoteApp
     public partial class NoteTaker : Form
     {
         DataTable notes = new DataTable();
-        bool writeable = false;
+        bool editing = false;
         public NoteTaker()
         {
             InitializeComponent();
@@ -28,7 +28,19 @@ namespace NoteApp
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            notes.Rows.Add(titelBox.Text, noteBox.Text);
+       
+            if (editing)
+            {
+                notes.Rows[dataGridView1.CurrentCell.RowIndex]["Title"] = titelBox.Text;
+                notes.Rows[dataGridView1.CurrentCell.RowIndex]["note"] = noteBox.Text;
+            }
+            else
+            {
+                notes.Rows.Add(titelBox.Text, noteBox.Text);
+            }
+            titelBox.Text = "Title";
+            noteBox.Text = "";
+            editing = false;
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -41,6 +53,7 @@ namespace NoteApp
             titelBox.Text = notes.Rows[dataGridView1.CurrentCell.RowIndex].ItemArray[0].ToString();
             noteBox.Text = notes.Rows[dataGridView1.CurrentCell.RowIndex].ItemArray[1].ToString();
 
+            editing = true;
         }
 
         private void NoteTaker_Load(object sender, EventArgs e)
